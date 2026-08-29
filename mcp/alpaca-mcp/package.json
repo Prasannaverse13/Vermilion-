@@ -1,0 +1,15 @@
+{
+  "name": "vermilion-alpaca-mcp",
+  "version": "0.1.0",
+  "description": "Vermilion's Alpaca MCP server — exposes the paper-trading REST API (account, positions, orders, options chain, options order, snapshots, history) over JSON-RPC 2.0 stdio so any MCP-compatible agent (Claude, Cursor, ChatGPT) can drive Vermilion's broker.",
+  "type": "module",
+  "bin": {
+    "vermilion-alpaca-mcp": "./server.mjs"
+  },
+  "scripts": {
+    "start": "node server.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

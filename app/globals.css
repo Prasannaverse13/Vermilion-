@@ -1,0 +1,420 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------ */
+/*  Vermilion — Henry-style design tokens (ai.work reference)           */
+/*  Dark editorial, near-monochrome, rationed color, 100px pills.        */
+/* ------------------------------------------------------------------ */
+
+:root {
+  /* Surfaces — three-step near-black stack */
+  --color-obsidian: #000000;
+  --color-carbon:   #141414;
+  --color-tar:      #0c0c0c;
+
+  /* Warm neutrals — the only chromatic deviation from pure neutral */
+  --color-bone:     #d4d0c9;
+  --color-ash:      #878581;
+  --color-smoke:    #615f5c;
+  --color-pearl:    #d9d9d9;
+  --color-graphite: #a1a1a1;
+  --color-chalk:    #ffffff;
+
+  /* Status — used SPARINGLY, only on stat bars + decision pills */
+  --color-refuse:   var(--color-refuse);   /* warm rose for refusals */
+  --color-execute:  #1fe274;   /* warm green for executions */
+  --color-caution:  #ff9634;   /* warm orange for caution */
+
+  /* Layout */
+  --page-max-width: 1200px;
+  --section-gap: 80px;
+  --card-padding: 24px;
+  --element-gap: 8px;
+
+  /* Back-compat aliases (older code references the old names) */
+  --color-bone-white: var(--color-bone);
+  --color-slate-dark: var(--color-obsidian);
+  --color-graphite:   var(--color-carbon);
+  --color-fog:        var(--color-ash);
+  --color-charcoal:   var(--color-tar);
+  --color-indigo-dusk: var(--color-chalk);
+}
+
+@theme inline {
+  --color-bone-white: var(--color-bone);
+  --color-slate-dark: var(--color-obsidian);
+  --color-graphite:   var(--color-carbon);
+  --color-fog:        var(--color-ash);
+  --color-ash:        var(--color-ash);
+  --color-charcoal:   var(--color-tar);
+  --color-indigo-dusk: var(--color-chalk);
+
+  --font-replica-regular: var(--font-space-grotesk), ui-sans-serif, system-ui,
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-replica-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular,
+    Menlo, Monaco, Consolas, monospace;
+
+  --radius-cards: 10px;
+  --radius-pills: 100px;
+  --radius-buttons: 100px;
+}
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body {
+  background: var(--color-obsidian);
+  color: var(--color-bone);
+  font-family: var(--font-replica-regular);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+/* Hairline divider used between sections */
+.hairline {
+  height: 1px;
+  background: #2e2f37;
+  width: 100%;
+}
+
+/* Hero mural — multicolored letterforms */
+.mural-letter {
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  display: inline-block;
+}
+
+.mural-i {
+  background-image: linear-gradient(
+    100deg,
+    #ff4f8b 0%,
+    #ff6b6b 35%,
+    #ffb86c 70%,
+    #ffd166 100%
+  );
+}
+.mural-show {
+  background-image: linear-gradient(
+    100deg,
+    #ffd166 0%,
+    #ffb86c 30%,
+    #ff7e6b 60%,
+    #f25f7a 100%
+  );
+}
+.mural-my {
+  background-image: linear-gradient(
+    100deg,
+    #5cc8ff 0%,
+    #4fb6ff 30%,
+    #6b8df0 60%,
+    #b06bff 100%
+  );
+}
+.mural-work {
+  background-image: linear-gradient(
+    100deg,
+    #6bf0a4 0%,
+    #4fd1a4 35%,
+    #38c6c2 65%,
+    #4fb6ff 100%
+  );
+}
+
+/* Status dot — pulsing live indicator */
+@keyframes live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.85);
+  }
+}
+.live-dot {
+  animation: live-pulse 2.4s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Motion vocabulary                                                  */
+/*  Easing: cubic-bezier(0.22, 1, 0.36, 1) — soft ease-out, the         */
+/*  default for things responding to the user.                         */
+/* ------------------------------------------------------------------ */
+
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Reveal — fades + slides up when in view */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+  will-change: opacity, transform;
+}
+.reveal.in-view {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal[data-delay="0"] { transition-delay: 0ms; }
+.reveal[data-delay="1"] { transition-delay: 70ms; }
+.reveal[data-delay="2"] { transition-delay: 140ms; }
+.reveal[data-delay="3"] { transition-delay: 210ms; }
+.reveal[data-delay="4"] { transition-delay: 280ms; }
+.reveal[data-delay="5"] { transition-delay: 350ms; }
+.reveal[data-delay="6"] { transition-delay: 420ms; }
+
+/* Bar fill — horizontal grow from origin */
+.bar-fill {
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 1100ms var(--ease-out);
+  will-change: transform;
+}
+.bar-fill-right {
+  transform: scaleX(0);
+  transform-origin: right center;
+  transition: transform 1100ms var(--ease-out);
+  will-change: transform;
+}
+.reveal.in-view .bar-fill,
+.reveal.in-view .bar-fill-right {
+  transform: scaleX(1);
+}
+
+/* Scale-in for centerpiece number */
+@keyframes scale-in {
+  0% { opacity: 0; transform: scale(0.94); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.scale-in.in-view {
+  animation: scale-in 800ms var(--ease-out) both;
+}
+
+/* Card hover lift — subtle, no shadow */
+.card-lift {
+  transition: transform 200ms var(--ease-out), background-color 200ms
+      var(--ease-out);
+  will-change: transform;
+}
+.card-lift:hover {
+  transform: translateY(-2px);
+  background-color: #3f414b;
+}
+
+/* REFUSED badge — soft pulse */
+@keyframes refused-pulse {
+  0%,
+  100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+.refused-pulse {
+  animation: refused-pulse 2.6s ease-in-out infinite;
+}
+
+/* Live ticker — gentle slide on tick update */
+@keyframes tick-flash-pos {
+  0% { color: var(--color-execute); }
+  100% { color: var(--color-ash); }
+}
+@keyframes tick-flash-neg {
+  0% { color: var(--color-refuse); }
+  100% { color: var(--color-ash); }
+}
+.tick-flash-pos {
+  animation: tick-flash-pos 1400ms var(--ease-out);
+}
+.tick-flash-neg {
+  animation: tick-flash-neg 1400ms var(--ease-out);
+}
+
+/* Tabular numbers — for tickers and counters */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+}
+
+/* Live feed dot — for the audit log */
+@keyframes feed-dot {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(139, 154, 255, 0.6); }
+  50% { box-shadow: 0 0 0 6px rgba(139, 154, 255, 0); }
+}
+.feed-dot {
+  animation: feed-dot 2.4s ease-in-out infinite;
+}
+
+/* Marquee for the live ticker (overflow only — not full marquee) */
+.ticker-track {
+  display: inline-flex;
+  gap: 28px;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal.in-view,
+  .bar-fill,
+  .bar-fill-right,
+  .scale-in,
+  .scale-in.in-view,
+  .card-lift,
+  .refused-pulse,
+  .live-dot,
+  .feed-dot,
+  .tick-flash-pos,
+  .tick-flash-neg,
+  .bg-blob-a,
+  .bg-blob-b,
+  .bg-blob-c,
+  .page-bg {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Custom scrollbar — quiet dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-slate-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-graphite);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-fog);
+}
+
+/* Selection color */
+::selection {
+  background: var(--color-indigo-dusk);
+  color: var(--color-bone-white);
+}
+
+/* Sign-out button (server-rendered, hover via CSS only) */
+.signout-btn {
+  border: 1px solid rgba(244, 114, 114, 0.4);
+  background: transparent;
+}
+.signout-btn:hover {
+  background: rgba(244, 114, 114, 0.12);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Page background — Henry-style: near-monochrome, near-black.         */
+/*  Real product content lives in the hero, not as a backdrop slab.      */
+/* ------------------------------------------------------------------ */
+
+.page-bg {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  background: var(--color-obsidian);
+}
+
+.page-bg-base {
+  position: absolute;
+  inset: 0;
+  background:
+    /* A single warm radial glow, very subtle — like a single light
+       source in a darkroom. Positioned top-center. */
+    radial-gradient(
+      60% 50% at 50% 0%,
+      rgba(212, 208, 201, 0.04) 0%,
+      rgba(212, 208, 201, 0) 70%
+    ),
+    var(--color-obsidian);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Card surface — Henry Carbon card with 10px radius + 1px hairline    */
+/* ------------------------------------------------------------------ */
+
+.henry-card {
+  background: var(--color-carbon);
+  border: 1px solid rgba(212, 208, 201, 0.1);
+  border-radius: 10px;
+}
+
+.henry-card-tar {
+  background: var(--color-tar);
+  border: 1px solid rgba(212, 208, 201, 0.06);
+  border-radius: 10px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Pills — 100px border-radius, the system's non-negotiable shape        */
+/* ------------------------------------------------------------------ */
+
+.pill-primary {
+  background: var(--color-bone);
+  color: var(--color-obsidian);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  transition: filter 150ms ease;
+}
+.pill-primary:hover { filter: brightness(1.08); }
+
+.pill-ghost {
+  background: transparent;
+  color: var(--color-bone);
+  border: 1px solid var(--color-smoke);
+  border-radius: 100px;
+  padding: 8px 16px;
+  font-weight: 500;
+  font-size: 13px;
+  letter-spacing: -0.02em;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+.pill-ghost:hover { border-color: var(--color-ash); }
+
+/* ------------------------------------------------------------------ */
+/*  Type roles — the Henry scale                                         */
+/* ------------------------------------------------------------------ */
+
+.eyebrow {
+  font-family: var(--font-replica-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ash);
+  line-height: 1.2;
+}
+
+.text-bone { color: var(--color-bone); }
+.text-ash  { color: var(--color-ash); }
+.text-smoke{ color: var(--color-smoke); }
+.text-pearl{ color: var(--color-pearl); }
+.text-graphite { color: var(--color-graphite); }
+.text-chalk{ color: var(--color-chalk); }
+
+/* Back-compat: the old token names still exist but point to the
+   new Henry palette. */
+.text-bone-white { color: var(--color-bone) !important; }
+.text-fog        { color: var(--color-ash) !important; }
+.text-graphite   { color: var(--color-carbon) !important; }
+.text-indigo-dusk{ color: var(--color-chalk) !important; }
+
+/* Stat-card accent bars (the only places chromatic color appears) */
+.stat-bar-refuse  { background: var(--color-refuse);  }
+.stat-bar-execute { background: var(--color-execute); }
+.stat-bar-caution { background: var(--color-caution); }
+
