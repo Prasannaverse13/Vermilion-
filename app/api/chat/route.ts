@@ -223,12 +223,14 @@ ${decisionsBlock || "  (none yet)"}
   if (toolCall?.function.name === "propose_options_strategy") {
     let parsed: Record<string, unknown> = {};
     try { parsed = JSON.parse(toolCall.function.arguments); } catch { /* keep empty */ }
-    const kind = String(parsed.kind ?? "");
+    const kindRaw = String(parsed.kind ?? "");
     const underlying = String(parsed.underlying ?? "").toUpperCase();
     const qty = Math.max(1, Math.floor(Number(parsed.qty ?? 1)));
     const expiry = String(parsed.expiry ?? "");
     const reasoning = String(parsed.reasoning ?? "");
-    if (!kind || !underlying || !expiry) {
+    const validKinds = ["covered_call", "protective_put", "bull_call_spread", "bear_put_spread"] as const;
+    type StrategyKind = (typeof validKinds)[number];
+    if (!(validKinds as readonly string[]).includes(kindRaw) || !underlying || !expiry) {
       const note = await persistAssistant(
         supabase,
         user.id,
@@ -237,6 +239,7 @@ ${decisionsBlock || "  (none yet)"}
       );
       return NextResponse.json({ ok: true, message: note, sessionId });
     }
+    const kind = kindRaw as StrategyKind;
 
     try {
       const { composeStrategy } = await import("@/lib/alpaca/server");

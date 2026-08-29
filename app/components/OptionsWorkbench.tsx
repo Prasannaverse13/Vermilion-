@@ -128,19 +128,19 @@ export function OptionsWorkbench({
     setError(null);
     setResult(null);
     try {
-      const strategy = {
-        kind,
+      const payload = {
+        kind: strategy,
         underlying: symbol,
         qty,
         expiry,
-        ...(kind === "covered_call" || kind === "protective_put"
+        ...(strategy === "covered_call" || strategy === "protective_put"
           ? { strike_offset_pct: strikeOffset }
           : { long_strike_offset_pct: longOffset, short_strike_offset_pct: shortOffset }),
       };
       const r = await fetch("/api/alpaca/options", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ strategy }),
+        body: JSON.stringify({ strategy: payload }),
       });
       const j = await r.json();
       if (!r.ok) throw new Error(j.error ?? "compose_failed");
