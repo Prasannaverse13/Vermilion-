@@ -17,7 +17,7 @@ if (!sqlPath) {
 
 require('dotenv').config({ path: path.join(__dirname, '..', '.env.local') });
 
-const ref = 'lewowwpsuxgbhaiwrbfl';
+const ref = process.env.SUPABASE_PROJECT_REF || 'your-project-ref';
 const password = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!password) {
   console.error('SUPABASE_SERVICE_ROLE_KEY not set');
